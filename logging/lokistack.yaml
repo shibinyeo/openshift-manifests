@@ -1,0 +1,95 @@
+apiVersion: loki.grafana.com/v1
+kind: LokiStack
+metadata:
+  name: logging-loki
+  namespace: openshift-logging
+spec:
+  hashRing:
+    type: memberlist
+    memberlist:
+      instanceAddrType: podIP
+  limits:
+    global:
+      retention:
+        days: 30
+      queries:
+        queryTimeout: 3m
+  managementState: Managed
+  size: 1x.small
+  storage:
+    schemas:
+    - effectiveDate: "2024-09-06"
+      version: v13
+    secret:
+      name: logging-loki-s3
+      type: s3
+    tls:
+      caName: loki-s3-ca
+  storageClassName: ocs-storagecluster-ceph-rbd
+  template:
+    compactor:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    distributor:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    gateway:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    indexGateway:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    ingester:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    querier:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    queryFrontend:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+    ruler:
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/infra
+        value: ""
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+  tenants:
+    mode: openshift-logging

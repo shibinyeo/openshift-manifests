@@ -1,0 +1,19 @@
+apiVersion: logging.openshift.io/v1alpha1
+kind: LogFileMetricExporter
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/infra: ""
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/infra
+    value: ""
+    operator: Exists
+  resources:
+    limits:
+      cpu: 500m
+    requests:
+      cpu: 200m
+      memory: 128Mi
