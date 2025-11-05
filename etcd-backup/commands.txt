@@ -23,6 +23,7 @@ oc apply -f cronjob-etcd-bkp.yaml
 # Create a job from the cronjob to test
 oc create job backup --from=cronjob/openshift-backup
 watch oc get pods -n ocp-etcd-backup
+oc delete job backup   # cleanup
 
 # (on the NFS Server) Check that the backup is generated
 ls -l <nfs_share_dir>

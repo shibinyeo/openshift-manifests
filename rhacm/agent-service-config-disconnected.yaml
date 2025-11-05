@@ -1,0 +1,36 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+  name: agent
+spec:
+  databaseStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 50Gi
+    storageClassName: nutanix-volume
+  filesystemStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Gi
+    storageClassName: nutanix-volume
+  imageStorage:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Gi
+    storageClassName: nutanix-volume
+  mirrorRegistryRef:
+    name: mirrorconfig
+  osImages:
+  - cpuArchitecture: x86_64
+    openshiftVersion: "4.15"
+    url: http://<bastion>.<base_domain>:8080/rhcos-live.x86_64.iso
+    version: 415.92.202406111137-0
+  unauthenticatedRegistries:
+  - registry.redhat.io
+
