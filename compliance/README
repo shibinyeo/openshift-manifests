@@ -1,0 +1,2 @@
+rwx-scansetting.yaml : Uses a `StorageClass` that can be mounted by multiple pods, which helps in efficiency.
+master-scansetting.yaml: For compact clusters, or any cluster where master nodes also have worker roles, this scans only the masters so that compliance doesn't double-scan.

@@ -1,0 +1,24 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: ocp4-cis-tailoredprofile
+  namespace: openshift-compliance
+spec:
+  title: Custom TailedProfile that extends ocp4-cis
+  description: Exempt some ocp4-cis items
+  extends: ocp4-cis
+  disableRules:
+  - name: ocp4-cis-ocp-allowed-registries
+    rationale: To prevent check for allowed registries
+  - name: ocp4-cis-ocp-allowed-registries-for-import
+    rationale: To prevent check for allowed registries for import
+  - name: ocp4-cis-audit-log-forwarding-enabled
+    rationale: To prevent failed scan error due to bug
+  setValues:
+  - name: ocp4-var-sccs-with-allowed-capabilities-regex
+    rationale: To exclude extra SCCs from OCP-CIS rule
+    value: ^noobaa$|^rook-ceph-csi$|^privileged$
+  - name: ocp4-var-network-policies-namespaces-exempt-regex
+    value: project-without-policy-1|project-without-policy-2
+    rationale: To exempt namespaces from network policies
+

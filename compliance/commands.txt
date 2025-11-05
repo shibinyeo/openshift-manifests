@@ -1,0 +1,10 @@
+# Command 1: Get SCCs that are being used
+oc get scc -o json | jq '[.items[] | select(.metadata.name | test("${SCC_REGEX}") | not) | select(.allowedCapabilities != null) | .metadata.name]'
+
+--------------------------------------
+# Command 1: all non-control plane projects
+oc get namespaces -o json | jq '[.items[] | select((.metadata.name | startswith("openshift") | not) and (.metadata.name | startswith("kube-") | not) and .metadata.name != "default" and (true)) | .metadata.name]'
+
+# Command 2: all non-control plane projects with a NetworkPolicy
+oc get --all-namespaces networkpolicies -o json | jq '[.items[] | select((.metadata.namespace | startswith("openshift") | not) and (.metadata.namespace | startswith("kube-") | not) and .metadata.namespace != "default" and (true)) | .metadata.namespace] | unique'
+

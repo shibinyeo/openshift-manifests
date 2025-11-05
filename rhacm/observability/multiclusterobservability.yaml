@@ -12,4 +12,4 @@ spec:
       key: thanos.yaml
       tlsSecretName: tls-certs-secret
       tlsSecretMountPath: /etc/minio/certs
-
+  storageClass: ocs-storagecluster-ceph-rbd   #block
