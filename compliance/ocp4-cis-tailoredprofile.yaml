@@ -8,11 +8,11 @@ spec:
   description: Exempt some ocp4-cis items
   extends: ocp4-cis
   disableRules:
-  - name: ocp4-cis-ocp-allowed-registries
+  - name: ocp4-ocp-allowed-registries
     rationale: To prevent check for allowed registries
-  - name: ocp4-cis-ocp-allowed-registries-for-import
+  - name: ocp4-ocp-allowed-registries-for-import
     rationale: To prevent check for allowed registries for import
-  - name: ocp4-cis-audit-log-forwarding-enabled
+  - name: ocp4-audit-log-forwarding-enabled
     rationale: To prevent failed scan error due to bug
   setValues:
   - name: ocp4-var-sccs-with-allowed-capabilities-regex

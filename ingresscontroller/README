@@ -1,0 +1,3 @@
+- Use `ingresscontroller-routeshard.yaml` to shard ingress traffic by `Route` labels.
+- Use `ingresscontroller-namespaceshard.yaml` to shard ingress traffic by `Namespace` labels.
+- Use `ingresscontroller-default-unselect.yaml` to shard the default ingress controller to remove the handling of any traffic handled by the above labels.

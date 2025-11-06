@@ -2,7 +2,7 @@ apiVersion: compliance.openshift.io/v1alpha1
 kind: ScanSetting
 maxRetryOnTimeout: 3
 metadata:
-  name: custom
+  name: rwx
   namespace: openshift-compliance
 rawResultStorage:
   nodeSelector:
