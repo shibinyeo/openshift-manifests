@@ -1,0 +1,14 @@
+# Remove the subjects that originally had the role
+oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+
+# Remove any other entities that are bound to the role
+oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+
+# Change the annotation to false
+oc annotate clusterrolebinding/self-provisioners --overwrite rbac.authorization.kubernetes.io/autoupdate=false
+
+# Login as a user that is not a cluster-admin
+oc login -u <user> api.<cluster_name>.<base_domain>:6443
+
+# Try creating new project, it should show an error
+oc new-project test
