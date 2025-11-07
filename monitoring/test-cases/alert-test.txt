@@ -1,0 +1,38 @@
+oc project openshift-monitoring
+
+# Go into the alertmanager pod
+oc exec alertmanager-main-0 -it -- bash
+
+# See the routing tree
+amtool config routes show --alertmanager.url http://localhost:9093
+
+# See which receiver a "severity=<sev>" alert will send to
+amtool config routes test severity="<sev>" --alertmanager.url http://localhost:9093
+
+# Trigger an alert manually
+amtool alert add --alertmanager.url http://localhost:9093 alertname="TestAlert" severity="<sev>"
+
+# Check if the "TestAlert" is sent
+amtool alert --alertmanager.url http://localhost:9093
+
+
+----------------
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: test-alert
+  namespace: openshift-monitoring
+spec:
+  groups:
+  - name: example.rules
+    rules:
+    - alert: TestCriticalAlert
+      expr: vector(1)
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Test Critical Alert"
+        description: "This is a manually triggered test alert."
+
+

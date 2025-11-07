@@ -20,6 +20,7 @@ spec:
         include_granted_scopes: "true"
       claims:
         preferredUsername: 
+        - upn
         - preferred_username
         - email
         name: 
@@ -31,5 +32,4 @@ spec:
         - email
         groups: 
         - groups
-      issuer: https://www.idp-issuer.com
-
+      issuer: https://www.idp-issuer.com/v2.0
