@@ -1,0 +1,25 @@
+# Use either of the following
+script ocp-pre-upgrade.txt
+#script ocp-post-upgrade.txt
+
+# To see that everything is working well
+oc get nodes
+oc adm top nodes
+oc get co 
+oc get mcp 
+oc get clusterversion 
+oc get pods -A 
+oc get pods -A | grep -Evi "Running|Completed" 
+for i in $(oc get nodes -o name); do oc describe $i; done
+
+# To see operator info
+oc get csv -o custom-columns="NAME:.metadata.name,VERSION:.spec.version,DISPLAY:.spec.displayName" --no-headers -A | sort -u 
+oc get installplan -A 
+oc get subs -A
+for i in $(oc get imagecontentsourcepolicy -o name); do echo -e "\n[$i]\n"; oc get $i -o yaml; done
+for i in $(oc get catalogsource -n openshift-marketplace -o name); do echo -e "\n[$i]\n"; oc get $i -n openshift-marketplace -o yaml; done
+oc get packagemanifest -o custom-columns="NAME:.metadata.name,VERSION:.status.channels[0].currentCSV"
+
+# Exit script
+exit
+

@@ -1,0 +1,38 @@
+# Get all the alerts from Prometheus
+oc exec -it statefulset/prometheus-k8s -c prometheus \
+> -n openshift-monitoring -- \
+> curl -fsSL 'http://localhost:9090/api/v1/alerts' | jq . > alerts.json
+
+# The output should be a list of Relevant alerts
+jq '[.data.alerts[] |
+  select(.labels.alertname=="APIRemovedInNextReleaseInUse" or
+         .labels.alertname=="APIRemovedInNextEUSReleaseInUse")]' < alerts.json
+
+# See "REMOVEDINRELEASE" to find in-use APIs that deprecate soon
+oc get apirequestcounts
+
+## Example 1: only shows lines with 4 filled fields (which corresponds to APIs that have "REMOVEDINRELEASE" content)
+oc get apirequestcounts | awk '{if(NF==4){print $0}}'
+
+## Example 2: Filter to see only APIs that are deprecated or going to be
+oc get apirequestcounts -o jsonpath='{range .items[?(@.status.removedInRelease!="")]}{.status.removedInRelease}{"\t"}{.metadata.name}{"\n"}{end}'
+
+# (using output of previous command) See "username" & "userAgent" to see what workloads use the API
+oc get apirequestcounts <resource>.<version>.<group> -o yaml
+
+## Example 1
+oc get apirequestcounts poddisruptionbudgets.v1beta1.policy -o jsonpath='{range .status.currentHour..byUser[*]}{..byVerb[*].verb}{","}{.username}{","}{.userAgent}{"\n"}{end}' | sort -k 2 -t, -u | column -t -s, -NVERBS,USERNAME,USERAGENT
+oc get apirequestcounts poddisruptionbudgets.v1beta1.policy -o jsonpath='{range .status.last24h..byUser[*]}{..byVerb[*].verb}{","}{.username}{","}{.userAgent}{"\n"}{end}' | sort -k 2 -t, -u | column -t -s, -NVERBS,USERNAME,USERAGENT
+
+## Example 2
+oc get apirequestcounts <resource>.<version>.<group> -o yaml | grep -E "userAgent|username"
+
+# This is for upgrading from 4.11 to 4.12
+oc -n openshift-config patch cm admin-acks --patch '{"data":{"ack-4.11-kube-1.25-api-removals-in-4.12":"true"}}' --type=merge
+
+# This is for upgrading from 4.19 to 4.20
+oc -n openshift-config patch cm admin-acks --patch '{"data":{"ack-4.19-admissionregistration-v1beta1-api-removals-in-4.20":"true"}}' --type=merge
+
+# Set val to 2 (?not tested)
+oc patch mcp/<worker> --type merge -p '{"spec":{"maxUnavailable":"2"}}'
+

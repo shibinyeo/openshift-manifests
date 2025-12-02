@@ -1,0 +1,10 @@
+oc get co
+
+# Check ceph health status and that PG status is "active+clean"
+oc exec -it $(oc get pod -n openshift-storage -l app=rook-ceph-operator -o name) -n openshift-storage -- ceph status -c /var/lib/rook/openshift-storage/openshift-storage.config
+
+# Ensure that skew is 0
+oc exec -it $(oc get pod -n openshift-storage -l app=rook-ceph-operator -o name) -n openshift-storage -- ceph time-sync-status -c /var/lib/rook/openshift-storage/openshift-storage.config
+
+oc get storagecluster -n openshift-storage
+
